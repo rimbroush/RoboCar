@@ -13,38 +13,17 @@ def affichage(matrice:list, voiture:RoboCar)->None:
     for j in range(len(matrice)):
         for i in range(len(matrice[j])-1):
             if (i, j) == voiture.coo:
-                chaine += orientation(voiture) + " "
+                chaine += voiture.orientation() + " "
             else:
                 chaine += matrice[j][i] + " "
         if (i+1, j) == voiture.coo:
-            chaine += orientation(voiture) + "\n"
+            chaine += voiture.orientation() + "\n"
         else:
             chaine += matrice[j][i+1] + "\n"
     print(chaine)
     print(f"Coordoonées de la voiture: {voiture.coo}")
-    print(f"Orientation de la voiture: {orientation(voiture)}")
+    print(f"Orientation de la voiture: {voiture.orientation()}")
     print("----------------------------------------------------\n")
-
-def orientation(voiture:RoboCar)->str:
-    """
-    Renvoie une chaîne de caractère donnant la direction de la voiture
-    """
-    if voiture.s%8 == 0:
-        return "↑"
-    elif voiture.s%8 == 1:
-        return "↗"
-    elif voiture.s%8 == 2:
-        return "→"
-    elif voiture.s%8 == 3:
-        return "↘"
-    elif voiture.s%8 == 4:
-        return "↓"
-    elif voiture.s%8 == 5:
-        return "↙"
-    elif voiture.s%8 == 6:
-        return "←"
-    elif voiture.s%8 == 7:
-        return "↖"
 
 def avancer(matrice:list, voiture:RoboCar)->None:
     """
