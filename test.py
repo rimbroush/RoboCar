@@ -14,9 +14,8 @@ def affiche(matrice:list, voiture:RoboCar, frm)->None:
             ttk.Label(frm, text=voiture.orientation()).grid(column=i, row=j+1)
         else:
             ttk.Label(frm, text=matrice[i][j+1]).grid(column=i, row=j+1)
-    print(f"Coordoonées de la voiture: {voiture.coo}")
-    print(f"Orientation de la voiture: {voiture.orientation()}")
-    print("----------------------------------------------------\n")
+    ttk.Label(frm, text=f"Coordoonées de la voiture: {voiture.coo}").grid(column=i+1, row=0)
+    ttk.Label(frm, text=f"Orientation de la voiture: {voiture.orientation()}").grid(column=i+1, row=1)
 
 def keypressed2(k):
     """
