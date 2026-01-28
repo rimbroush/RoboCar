@@ -2,115 +2,117 @@ from robocar import *
 from tkinter import *
 from tkinter import ttk
 
-def affiche(matrice:list, voiture:RoboCar, frm)->None:
+def creation(matrice:list, voiture:RoboCar, frm):
     """
-    Affiche la matrice et la voiture dans la fenêtre tkinter (initialisation)
+    Creation de la matrice avec les labels pour l'affichage tkinter
     """
+    mat = []
     for i in range(len(matrice)):
-        for j in range(len(matrice[i])-1):
-            if (i, j) == voiture.coo:
-                ttk.Label(frm, text=voiture.orientation()).grid(column=i, row=j)
+        ligne = []
+        for j in range (len(matrice[i])):
+            if (i,j) == voiture.coo:
+                label = ttk.Label(frm, text=voiture.orientation())
+                label.grid(column=i, row=j)
+                ligne.append(label)
             else:
-                ttk.Label(frm, text=matrice[i][j]).grid(column=i, row=j)
-        if (i, j+1) == voiture.coo:
-            ttk.Label(frm, text=voiture.orientation()).grid(column=i, row=j+1)
-        else:
-            ttk.Label(frm, text=matrice[i][j+1]).grid(column=i, row=j+1)
-    ttk.Label(frm, text=f"Coordoonées de la voiture: {voiture.coo}").grid(column=i+1, row=0)
-    ttk.Label(frm, text=f"Orientation de la voiture: {voiture.orientation()}").grid(column=i+1, row=1)
+                label = ttk.Label(frm, text=matrice[i][j])
+                label.grid(column=i, row=j)
+                ligne.append(label)
+        mat.append(ligne)
+    return mat
 
-def actualiser(matrice:list, voiture:RoboCar)->None:
-    ttk.Label(frm, text=voiture.orientation()).grid(column=voiture.coo[0], row=voiture.coo[1])
-    ttk.Label(frm, text="               ").grid(column=len(matrice), row=2)
-    ttk.Label(frm, text=f"Orientation de la voiture: {voiture.orientation()}").grid(column=len(matrice), row=1)
+def actualiser(voiture:RoboCar, mat_ttk:list)->None:
+    mat_ttk[voiture.coo[0]][voiture.coo[1]].config(text=voiture.orientation())
+    mat_ttk[-1][1].config(text=f"Orientation de la voiture: {flash.orientation()}")
+    mat_ttk[-1][2].config(text="")
 
-def avancer(matrice:list, voiture:RoboCar)->None:
+def avancer(matrice:list, voiture:RoboCar, mat_ttk:list)->None:
     """
     Fait avancer la voiture dans matrice, affiche "MUR !" si elle est au bout
     """
     sens = voiture.s%8
-    coo = voiture.coo
-    if sens == 0 and coo[1]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0], row=coo[1]-1)
-        voiture.coo = (coo[0], coo[1]-1)
-    elif sens == 1 and coo[1]-1>=0 and coo[0]+1<len(matrice[coo[1]]):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]+1, row=coo[1]-1)
-        voiture.coo = (coo[0]+1, coo[1]-1)
-    elif sens == 2 and coo[0]+1<len(matrice[coo[1]]):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]+1, row=coo[1])
-        voiture.coo = (coo[0]+1, coo[1])
-    elif sens == 3 and coo[0]+1<len(matrice[coo[1]]) and coo[1]+1<len(matrice):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]+1, row=coo[1]+1)
-        voiture.coo = (coo[0]+1, coo[1]+1)
-    elif sens == 4 and coo[1]+1<len(matrice):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0], row=coo[1]+1)
-        voiture.coo = (coo[0], coo[1]+1)
-    elif sens == 5 and coo[1]+1<len(matrice) and coo[0]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]-1, row=coo[1]+1)
-        voiture.coo = (coo[0]-1, coo[1]+1)
-    elif sens == 6 and coo[0]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]-1, row=coo[1])
-        voiture.coo = (coo[0]-1, coo[1])
-    elif sens == 7 and coo[0]-1>=0 and coo[1]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]-1, row=coo[1]-1)
-        voiture.coo = (coo[0]-1, coo[1]-1)
-    if coo == voiture.coo:
-        ttk.Label(frm, text="MUR !").grid(column=len(matrice), row=2)
+    x,y = voiture.coo
+    if sens == 0 and y-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x][y-1].config(text=voiture.orientation())
+        voiture.coo = (x,y-1)
+    elif sens == 1 and y-1>=0 and x+1<len(matrice[y]):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x+1][y-1].config(text=voiture.orientation())
+        voiture.coo = (x+1, y-1)
+    elif sens == 2 and x+1<len(matrice[y]):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x+1][y].config(text=voiture.orientation())
+        voiture.coo = (x+1, y)
+    elif sens == 3 and x+1<len(matrice[y]) and y+1<len(matrice):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x+1][y+1].config(text=voiture.orientation())
+        voiture.coo = (x+1, y+1)
+    elif sens == 4 and y+1<len(matrice):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x][y+1].config(text=voiture.orientation())
+        voiture.coo = (x, y+1)
+    elif sens == 5 and y+1<len(matrice) and x-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x-1][y+1].config(text=voiture.orientation())
+        voiture.coo = (x-1, y+1)
+    elif sens == 6 and x-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x-1][y].config(text=voiture.orientation())
+        voiture.coo = (x-1, y)
+    elif sens == 7 and x-1>=0 and y-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x-1][y-1].config(text=voiture.orientation())
+        voiture.coo = (x-1, y-1)
+    if (x,y) == voiture.coo:
+        mat_ttk[-1][2].config(text="MUR !")
     else:
-        ttk.Label(frm, text="               ").grid(column=len(matrice), row=2)
-        ttk.Label(frm, text=f"Coordoonées de la voiture: {voiture.coo}").grid(column=len(matrice), row=0)
+        mat_ttk[-1][2].config(text="")
+        mat_ttk[-1][0].config(text=f"Coordoonées de la voiture: {voiture.coo}")
 
-def reculer(matrice:list, voiture:RoboCar)->None:
+def reculer(matrice:list, voiture:RoboCar, mat_ttk:list)->None:
     """
     Fait reuler la voiture dans matrice, affiche "MUR !" si elle est au bout
     """
     sens = voiture.s%8
-    coo = voiture.coo
-    if sens == 0 and coo[1]+1<len(matrice):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0], row=coo[1]+1)
-        voiture.coo = (coo[0], coo[1]+1)
-    elif sens == 1 and coo[1]+1<len(matrice) and coo[0]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]-1, row=coo[1]+1)
-        voiture.coo = (coo[0]-1, coo[1]+1)
-    elif sens == 2 and coo[0]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]-1, row=coo[1])
-        voiture.coo = (coo[0]-1, coo[1])
-    elif sens== 3 and coo[0]-1>=0 and coo[1]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]-1, row=coo[1]-1)
-        voiture.coo = (coo[0]-1, coo[1]-1)
-    elif sens == 4 and coo[1]-1>=0:
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0], row=coo[1]-1)
-        voiture.coo = (coo[0], coo[1]-1)
-    elif sens == 5 and coo[1]-1>=0 and coo[0]+1<len(matrice[coo[1]]):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]+1, row=coo[1]-1)
-        voiture.coo = (coo[0]+1, coo[1]-1)
-    elif sens == 6 and coo[0]+1<len(matrice[coo[1]]):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]+1, row=coo[1])
-        voiture.coo = (coo[0]+1, coo[1])
-    elif sens == 7 and coo[0]+1<len(matrice[coo[1]]) and coo[1]+1<len(matrice):
-        ttk.Label(frm, text=matrice[coo[0]][coo[1]]).grid(column=coo[0], row=coo[1])
-        ttk.Label(frm, text=voiture.orientation()).grid(column=coo[0]+1, row=coo[1]+1)
-        voiture.coo = (coo[0]+1, coo[1]+1)
-    if coo == voiture.coo:
-        ttk.Label(frm, text="MUR !").grid(column=len(matrice), row=2)
+    x,y = voiture.coo
+    if sens == 0 and y+1<len(matrice):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x][y+1].config(text=voiture.orientation())
+        voiture.coo = (x, y+1)
+    elif sens == 1 and y+1<len(matrice) and x-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x-1][y+1].config(text=voiture.orientation())
+        voiture.coo = (x-1, y+1)
+    elif sens == 2 and x-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x-1][y].config(text=voiture.orientation())
+        voiture.coo = (x-1, y)
+    elif sens== 3 and x-1>=0 and y-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x-1][y-1].config(text=voiture.orientation())
+        voiture.coo = (x-1, y-1)
+    elif sens == 4 and y-1>=0:
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x][y-1].config(text=voiture.orientation())
+        voiture.coo = (x, y-1)
+    elif sens == 5 and y-1>=0 and x+1<len(matrice[y]):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x+1][y-1].config(text=voiture.orientation())
+        voiture.coo = (x+1, y-1)
+    elif sens == 6 and x+1<len(matrice[y]):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x+1][y].config(text=voiture.orientation())
+        voiture.coo = (x+1, y)
+    elif sens == 7 and x+1<len(matrice[y]) and y+1<len(matrice):
+        mat_ttk[x][y].config(text=matrice[x][y])
+        mat_ttk[x+1][y+1].config(text=voiture.orientation())
+        voiture.coo = (x+1, y+1)
+    if (x,y) == voiture.coo:
+        mat_ttk[-1][2].config(text="MUR !")
     else:
-        ttk.Label(frm, text="               ").grid(column=len(matrice), row=2)
-        ttk.Label(frm, text=f"Coordoonées de la voiture: {voiture.coo}").grid(column=len(matrice), row=0)
+        mat_ttk[-1][2].config(text="")
+        mat_ttk[-1][0].config(text=f"Coordoonées de la voiture: {voiture.coo}")
 
 def keypressed2(k:Event)->None:
     """
@@ -118,14 +120,14 @@ def keypressed2(k:Event)->None:
     """
     if k.keysym == "Left":
         flash.s += -1
-        actualiser(matrice, flash)
+        actualiser(flash, mat_ttk)
     if k.keysym == "Right":
         flash.s += 1
-        actualiser(matrice, flash)
+        actualiser(flash, mat_ttk)
     if k.keysym == "Up":
-        avancer(matrice, flash)
+        avancer(matrice, flash, mat_ttk)
     if k.keysym == "Down":
-        reculer(matrice, flash)
+        reculer(matrice, flash, mat_ttk)
 
 root = Tk()
 root.bind('<KeyPress>', keypressed2)
@@ -137,6 +139,17 @@ matrice = [["O" for _ in range(5)] for _ in range(5)]
 frm = ttk.Frame(root, padding=10)
 frm.grid()
 
-affiche(matrice, flash, frm)
+mat_ttk = creation(matrice, flash, frm)
+ligne = []
+coo = ttk.Label(frm, text=f"Coordoonées de la voiture: {flash.coo}")
+coo.grid(column=len(matrice)+1, row=0)
+ligne.append(coo)
+orientation = ttk.Label(frm, text=f"Orientation de la voiture: {flash.orientation()}")
+orientation.grid(column=len(matrice)+1, row=1)
+ligne.append(orientation)
+mur = ttk.Label(frm, text="")
+mur.grid(column=len(matrice)+1, row=2)
+ligne.append(mur)
+mat_ttk.append(ligne)
 
 root.mainloop()
