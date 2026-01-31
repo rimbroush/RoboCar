@@ -5,7 +5,7 @@ from pygame.locals import *
 clock = pygame.time.Clock()
 pygame.init()
 screen = pygame.display.set_mode((500, 500))
-pygame.display.set_caption("Flash Run - Conduite lente")
+pygame.display.set_caption("Flash Run")
 clock = pygame.time.Clock()
 
 
