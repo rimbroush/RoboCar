@@ -14,7 +14,7 @@ def draw_flash(voiture):
     Dessine la voiture à l'écran."""
     x, y = voiture.coo
     center = (int(x + 25), int(y + 25))
-
+    
     pygame.draw.circle(screen, (34, 139, 34), center, 25)
 
     angle_rad = math.radians(voiture.a)
@@ -31,7 +31,6 @@ def draw_flash(voiture):
         center[0] + math.cos(angle_rad - 2.5) * 12,
         center[1] + math.sin(angle_rad - 2.5) * 12
     )
-
     pygame.draw.polygon(screen, (255, 255, 255), [tip, left, right])
 
 
