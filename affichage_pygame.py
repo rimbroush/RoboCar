@@ -53,13 +53,16 @@ def main():
             flash.coo[0] + 50 > 500 or flash.coo[1] + 50 > 500):
             flash.coo = (old_x, old_y)
         
-        trajet_carre = [("avancer", 50),
+        
+        if keys[K_SPACE]:
+            trajet_carre = [("avancer", 50),
                         ("tourner_droite", 90),
                         ("avancer", 50),
                         ("tourner_droite", 90),
                         ("avancer", 50),
                         ("tourner_droite", 90),
                         ("avancer", 50)]
+            flash.suivre_trajectoire(trajet_carre)
         
 
         screen.fill((0, 0, 0))
