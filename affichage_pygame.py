@@ -3,19 +3,22 @@ import pygame
 import math
 from pygame.locals import *
 
+HAUTEUR=500
+LARGEUR=500
+RAYON=25
 pygame.init()
-screen = pygame.display.set_mode((500, 500))
+screen = pygame.display.set_mode((LARGEUR,HAUTEUR))
 pygame.display.set_caption("Flash Run")
 clock = pygame.time.Clock()
 
-rayon = 25
+
 
 def draw_flash(voiture):
     """Cette fonction dessine la voiture sur l'écran"""
     x, y = voiture.coo
-    center = (int(x + rayon), int(y + rayon))
+    center = (int(x + rayon), int(y + RAYON))
 
-    pygame.draw.circle(screen, (34, 139, 34), center, rayon)
+    pygame.draw.circle(screen, (34, 139, 34), center, RAYON)
 
     angle_rad = math.radians(voiture.a)
     tip = (center[0] + math.cos(angle_rad) * 15,center[1] + math.sin(angle_rad) * 15)
@@ -32,7 +35,7 @@ def draw_obstacles(obstacles):
 
 def main():
     """Cette fonction represente le main qui lance la boucle principale du programme"""
-    flash = RoboCar("Flash", (200, 200), 4, 0, rayon)
+    flash = RoboCar("Flash", (200, 200), 4, 0, RAYON)
 
     v_rotation= 3
     running = True
@@ -67,7 +70,7 @@ def main():
                 flash.Contourne(flash.coo, flash.a, obstacles)
                 break
 
-        flash.mur_collision(500, 500, (old_x, old_y))
+        flash.mur_collision(LARGEUR,HAUTEUR, (old_x, old_y))
 
         screen.fill((0, 0, 0))
         draw_flash(flash)
