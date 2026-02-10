@@ -25,6 +25,12 @@ class RoboCar(object):
 
     def tourner_droite(self, vitesse):
         self.a = (self.a + vitesse) % 360
+
+    def mur_collision(self, largeur, hauteur, ancienne_pos):
+        x, y = self.coo
+        if x < 0 or y < 0 or x + 2 * self.r > largeur or y + 2 * self.r > hauteur:
+            self.coo = ancienne_pos
+
     def collision(self, obstacle):
         """Cette fonction verifie si la voiture entre en collision avec un obstacle"""
         x1, y1 = self.coo #coordonnées du robot
