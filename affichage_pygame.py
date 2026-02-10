@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 def draw_flash(voiture):
     """Cette fonction dessine la voiture sur l'écran"""
     x, y = voiture.coo
-    center = (int(x + rayon), int(y + RAYON))
+    center = (int(x + RAYON), int(y + RAYON))
 
     pygame.draw.circle(screen, (34, 139, 34), center, RAYON)
 
