@@ -8,13 +8,14 @@ screen = pygame.display.set_mode((500, 500))
 pygame.display.set_caption("Flash Run")
 clock = pygame.time.Clock()
 
+RAYON=25
 
 def draw_flash(voiture):
     """Cette fonction dessine la voiture sur l'écran"""
     x, y = voiture.coo
-    center = (int(x + 25), int(y + 25))
+    center = (int(x + RAYON), int(y + RAYON))
 
-    pygame.draw.circle(screen, (34, 139, 34), center, 25)
+    pygame.draw.circle(screen, (34, 139, 34), center, RAYON)
 
     angle_rad = math.radians(voiture.a)
     tip = (center[0] + math.cos(angle_rad) * 15,center[1] + math.sin(angle_rad) * 15)
@@ -23,7 +24,7 @@ def draw_flash(voiture):
 
 def main():
     """Cette fonction represente le main qui lance la boucle principale du programme"""
-    flash = RoboCar("Flash", (200, 200), 4, 0)
+    flash = RoboCar("Flash", (200, 200), 4, 0,RAYON)
 
     v_rotation= 3
     running = True
