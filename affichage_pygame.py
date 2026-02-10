@@ -65,7 +65,7 @@ def main():
         for obs in obstacles:
             if flash.collision(obs):
                 flash.Contourne(flash.coo, flash.a, obstacles)
-                return
+                break
 
         # collision avec le mur
         if (flash.coo[0] < 0 or flash.coo[1] < 0 or
