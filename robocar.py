@@ -2,12 +2,12 @@ import math
 from obstacle import *
 import obstacle
 class RoboCar(object):
-    def __init__(self, nom:str, coordonnees:tuple, vitesse:int, angle:int,rayon):
+    def __init__(self, nom:str, coordonnees:tuple, vitesse:int, angle:int, rayon:int):
         self.n = nom    # nom:string
         self.coo = coordonnees  # coordonnees:tuple(int, int)
         self.v = vitesse    # vitesse:int
-        self.a = angle  # angle:int [0;360]
-        self.r=rayon
+        self.a = angle # angle:int [0;360]
+        self.r = rayon 
     def avancer(self):
         """Avance la voiture selon son angle"""
         angle_rad = math.radians(self.a) 
@@ -25,6 +25,12 @@ class RoboCar(object):
 
     def tourner_droite(self, vitesse):
         self.a = (self.a + vitesse) % 360
+
+    def mur_collision(self, largeur, hauteur, ancienne_pos):
+        x, y = self.coo
+        if x < 0 or y < 0 or x + 2 * self.r > largeur or y + 2 * self.r > hauteur:
+            self.coo = ancienne_pos
+
     def collision(self, obstacle):
         """Cette fonction verifie si la voiture entre en collision avec un obstacle"""
         x1, y1 = self.coo #coordonnées du robot

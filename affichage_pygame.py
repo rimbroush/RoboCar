@@ -3,18 +3,22 @@ import pygame
 import math
 from pygame.locals import *
 
+HAUTEUR=500
+LARGEUR=500
+RAYON=25
 pygame.init()
-screen = pygame.display.set_mode((500, 500))
+screen = pygame.display.set_mode((LARGEUR,HAUTEUR))
 pygame.display.set_caption("Flash Run")
 clock = pygame.time.Clock()
+
 
 
 def draw_flash(voiture):
     """Cette fonction dessine la voiture sur l'écran"""
     x, y = voiture.coo
-    center = (int(x + 25), int(y + 25))
+    center = (int(x + RAYON), int(y + RAYON))
 
-    pygame.draw.circle(screen, (34, 139, 34), center, 25)
+    pygame.draw.circle(screen, (34, 139, 34), center, RAYON)
 
     angle_rad = math.radians(voiture.a)
     tip = (center[0] + math.cos(angle_rad) * 15,center[1] + math.sin(angle_rad) * 15)
@@ -31,14 +35,14 @@ def draw_obstacles(obstacles):
 
 def main():
     """Cette fonction represente le main qui lance la boucle principale du programme"""
-    flash = RoboCar("Flash", (200, 200), 4, 0)
+    flash = RoboCar("Flash", (200, 200), 4, 0, RAYON)
 
     v_rotation= 3
     running = True
     obstacles = [
-    Obstacle("rectangle", (100, 150), (80, 50)),
-    Obstacle("rectangle", (300, 200), (50, 50))
-]
+        Obstacle("rectangle", (100, 150), (80, 50)),
+        Obstacle("rectangle", (300, 200), (50, 50))
+    ]
 
     while running:
         clock.tick(60)
@@ -66,11 +70,8 @@ def main():
                 flash.Contourne(flash.coo, flash.a, obstacles)
                 break
 
-        # collision avec le mur
-        if (flash.coo[0] < 0 or flash.coo[1] < 0 or
-            flash.coo[0] + 50 > 500 or flash.coo[1] + 50 > 500):
-            flash.coo = (old_x, old_y)
-            
+        flash.mur_collision(LARGEUR,HAUTEUR, (old_x, old_y))
+
         screen.fill((0, 0, 0))
         draw_flash(flash)
         draw_obstacles(obstacles)
