@@ -2,6 +2,7 @@ from robocar import *
 import pygame
 import math
 from pygame.locals import *
+from obstacle import Obstacle
 
 HAUTEUR=500
 LARGEUR=500
@@ -27,7 +28,7 @@ def draw_flash(voiture):
 def draw_obstacles(obstacles):
     """Cette fonction dessine les obstacles sur l'écran"""
     for obs in obstacles:
-        x, y = obs.pos_aleatoire()
+        x, y = obs.pos
         w, h = obs.dim
         pygame.draw.rect(screen, (200, 0, 0), (x, y, w, h))
 
@@ -39,9 +40,11 @@ def main():
     v_rotation= 3
     running = True
     obstacles = [
-        Obstacle("rectangle", (0, 0), (80, 50)),
-        Obstacle("rectangle", (0, 0), (50, 50))
+        Obstacle("rectangle", (20, 0), (80, 50)),
+        Obstacle("rectangle", (50, 0), (50, 50))
     ]
+    for obs in obstacles : 
+        obs.pos_aleatoire()
 
     while running:
         clock.tick(60)
