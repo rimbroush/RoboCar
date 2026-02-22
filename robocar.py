@@ -70,3 +70,14 @@ class RoboCar:
         dist_y = min(front_y, hauteur - front_y)
 
         return min(dist_x, dist_y)
+    def obtenir_rectangle(self):
+        """cette fonction cree un rectangle simplifie autour du robot pour faire les collisions"""
+        half_L = self.longueur / 2 #le robot est centre donc on calcule le centre pour le retrancher apres a x et y
+        half_W = self.largeur / 2
+
+        return (
+            self.x - half_L, #on va du centre vers la gauche
+            self.y - half_W, #on va du centre vers le haut
+            self.longueur,
+            self.largeur
+        )
