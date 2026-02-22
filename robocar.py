@@ -53,4 +53,20 @@ class RoboCar:
 
             # projection dans la direction du robot
             projection = dx * dir_x + dy * dir_y #produit scalaire
+            if 0 < projection < max_range: #on regard si l'obstacle est proche
+                dist = math.sqrt(dx**2 + dy**2)
+                if dist < min_dist:
+                    min_dist = dist #on garde l'obstacle le plus proche devant
 
+        return min_dist
+    def distance_mur(self, largeur, hauteur, max_range=120):
+        """Cette fonction renvoie la distance au mur le plus proche dans la direction du robot"""
+        # point devant le robot
+        front_x = self.x + math.cos(self.angle) * max_range #on avance de 120 pixels dans la direction du robot
+        front_y = self.y + math.sin(self.angle) * max_range
+
+        # distance au mur le plus proche
+        dist_x = min(front_x, largeur - front_x)
+        dist_y = min(front_y, hauteur - front_y)
+
+        return min(dist_x, dist_y)
