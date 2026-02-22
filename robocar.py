@@ -28,3 +28,8 @@ class RoboCar:
     def set_vitesse_droite(self, v):
         """Modifier la vitesse du roue droite"""
         self.v_r = v
+    def calculer_vitesse(self):
+        """Cette fonction calcule la vitesse lineaire et angulaire"""
+        v = (self.v_r + self.v_l) / 2
+        w = (self.v_r - self.v_l) / self.WHEEL_BASE #c'est le theoreme de Thales applique au cercle de rotation
+        return v, w
