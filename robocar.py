@@ -14,3 +14,10 @@ class RoboCar:
         self.v_r = 0 #vitesse roue droite
         self.largeur = 40   # largeur (cote roues)
         self.longueur = 60  # longueur (avant/arriere)
+    def get_state(self):
+        """Recuperer l'etat du robot"""
+        return self.x, self.y, self.angle
+
+    def get_wheel_speeds(self):
+        """Recuperer la vitesse des roues"""
+        return self.v_l, self.v_r
