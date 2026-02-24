@@ -15,6 +15,19 @@ class RoboCar:
     def get_state(self):
         """Recuperer l'etat du robot"""
         return self.x, self.y, self.angle
+    def set_vitesse_gauche(self, v):
+        """Modifier la vitesse du roue gauche"""
+        self.vG = v
+        
+    def set_vitesse_droite(self, v):
+        """Modifier la vitesse du roue droite"""
+        self.vR = v
+        
+    def calculer_vitesse(self):
+        """Cette fonction calcule la vitesse lineaire et angulaire"""
+        v = (self.vR + self.vG) / 2
+        w = (self.vR - self.vG) / self.WHEEL_BASE #c'est le theoreme de Thales applique au cercle de rotation
+        return v, w
 
     def update(self, dt):
         """Mise a jour du robot"""
