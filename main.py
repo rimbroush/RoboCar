@@ -12,23 +12,25 @@ FPS = 60
 
 affichage = Affichage(LARGEUR, HAUTEUR)
 sim = Simulation(LARGEUR, HAUTEUR)#on cree la simulation qui contient le robot,les obstacles
-strat = Deplacement(sim) #on cree la stratégie qui reçoit la simulation
+strat = Deplacement(sim,sim.robot) #on cree la stratégie qui reçoit la simulation
 
 def main():
-    running = True
     mouvement_lineaire= False
+    running = True
     while running:
         dt = affichage.clock.tick(FPS) / 1000.0
         for event in affichage.events():
             if event.type == pygame.QUIT:
                 running = False
         if not mouvement_lineaire:
-            mouvement_lineaire=strat.avancer_x_metres(1, 80)
+            
+            mouvement_lineaire = strat.avancer_x_metres(1, 80)
         else:
-            strat.eviter_obstacles(80, 60, 30) #on decide quoi faire (avancer,tourner) le robot ne bouge pas la mais on regle sa vitesse seulement
+            sim.eviter_obstacles(80, 60, 30) #on decide quoi faire (avancer,tourner) le robot ne bouge pas la mais on regle sa vitesse seulement
+        
         a_collision = sim.update(dt) #c'est a que le robot bouge réellement
         if a_collision:
-            strat.tourner_sur_place(60)
+            sim.tourner_sur_place(60)
 
         affichage.update(sim.robot, sim.obstacles)
 

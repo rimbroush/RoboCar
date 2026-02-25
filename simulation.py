@@ -12,6 +12,20 @@ class Simulation():
     ]
         self.largeur = largeur
         self.hauteur = hauteur
+        
+    def avancer(self,vitesse):
+        """Permet Flash d'avancer"""
+        self.robot.set_vitesse_gauche(vitesse)
+        self.robot.set_vitesse_droite(vitesse)
+        
+    def arreter(self):
+        """met la vitesse des roues à 0 pour arrêter le robot"""
+        self.robot.set_vitesse_gauche(0)
+        self.robot.set_vitesse_droite(0)
+
+    def tourner_sur_place(self,vitesse):
+        self.robot.set_vitesse_gauche(-vitesse)
+        self.robot.set_vitesse_droite(vitesse)
     
     def distance_obstacle(self, max_range=140):
      min_dist = max_range
@@ -79,6 +93,7 @@ class Simulation():
             y1 < y2 + h2 and
             y1 + h1 > y2
         )
+        
     def appliquer_murs(self):
         """Empeche le robot de sortir de la fenetre"""
         half_L = self.robot.longueur / 2.0
@@ -93,7 +108,23 @@ class Simulation():
                 self.robot.x, self.robot.y = old_state
                 return True
         return False
-#dictionnaire avec qui on a une collision
+    #dictionnaire avec qui on a une collision
+    
+    def eviter_obstacles(self, vitesse_avance=80, vitesse_tourne=60, seuil=30):
+        dist_obs = self.distance_obstacle(max_range=140)
+        dist_mur = self.distance_mur(max_range=45)
+        distance = min(dist_obs, dist_mur)
+
+        if distance < seuil:
+            # Au lieu de tourner sur place, on fait un virage serré
+            # On réduit la vitesse d'une roue plus que l'autre
+            self.robot.set_vitesse_gauche(-vitesse_tourne) 
+            self.robot.set_vitesse_droite(vitesse_tourne)
+        else:
+            # On avance, mais on peut ajouter un tout petit peu de rotation 
+            # aléatoire ou constante pour qu'il ne reste pas sur une ligne droite infinie
+            self.avancer(vitesse_avance)
+
     def update(self, dt):
         """Met à jour le robot et l'environnement."""
         old_state = (self.robot.x, self.robot.y)
