@@ -44,7 +44,15 @@ class TestSimulation(unittest.TestCase):
         self.sim.arreter()
         self.assertEqual(self.sim.robot.vG, 0)
         self.assertEqual(self.sim.robot.vR, 0)
+class TestStrategie(unittest.TestCase):
 
+    def setUp(self):
+        self.sim = Simulation(800, 600)
+        self.strat = Deplacement(self.sim, self.sim.robot)
+
+    def test_avancer_x_metres(self):
+        fini = self.strat.avancer_x_metres(1, 80)
+        self.assertFalse(fini)
 
 
 
