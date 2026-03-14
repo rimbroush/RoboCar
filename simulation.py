@@ -97,7 +97,35 @@ class Simulation:
                     min_dist = max(0, dist_au_bord)
 
         return min_dist
+    def distance_cote_gauche(self, max_range=60):
+        """Calcule la distance libre sur le cote gauche du robot
+        Cette fonction sert a savoir si le robot peut tourner a gauche
+        """
+        angle_gauche = self.robot.angle - math.pi / 2 # angle correspondant au cote gauche du robot
+        dir_x = math.cos(angle_gauche)
+        dir_y = math.sin(angle_gauche)
+        # point de test sur le côté gauche
+        side_x = self.robot.x + dir_x * max_range
+        side_y = self.robot.y + dir_y * max_range
+        # distance au mur le plus proche
+        dist_x = min(side_x, self.largeur - side_x)
+        dist_y = min(side_y, self.hauteur - side_y)
+        min_dist = min(dist_x, dist_y)
 
+        for obs in self.obstacles:  # on teste aussi les obstacles
+            cx = obs.pos[0] + obs.dim[0] / 2
+            cy = obs.pos[1] + obs.dim[1] / 2
+
+            dx = cx - self.robot.x
+            dy = cy - self.robot.y
+
+            projection = dx * dir_x + dy * dir_y
+
+            if 0 < projection < max_range:
+                dist = math.sqrt(dx*2 + dy*2) - max(obs.dim) / 2
+                min_dist = min(min_dist, max(0, dist))
+
+        return min_dist
     def distance_mur(self, max_range=120):
         """
         Calcule la distance au mur devant le robot 
