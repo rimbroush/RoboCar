@@ -33,6 +33,25 @@ class Simulation:
         """
         self.robot.set_vitesse_gauche(-vitesse)
         self.robot.set_vitesse_droite(-vitesse)
+    def tourner_sur_place(self, vitesse):
+        """Fait tourner le robot sur lui-même
+        """
+        self.robot.set_vitesse_gauche(vitesse) #Une roue avance et l'autre recule
+        self.robot.set_vitesse_droite(-vitesse)
+
+    def tourner_gauche(self, vitesse):
+        """
+        Fait tourner le robot vers la gauche 
+        """
+        self.robot.set_vitesse_gauche(vitesse)
+        self.robot.set_vitesse_droite(0)
+
+    def tourner_droite(self, vitesse):
+        """
+        Fait tourner le robot vers la droite 
+        """
+        self.robot.set_vitesse_gauche(0)
+        self.robot.set_vitesse_droite(vitesse)
 
     def distance_obstacle(self, max_range=140): #max_range c'est la portee maximale du capteur (en pixels)
         """
