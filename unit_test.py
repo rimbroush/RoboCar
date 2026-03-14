@@ -41,7 +41,6 @@ class TestRoboCar(unittest.TestCase):
         self.assertAlmostEqual(self.robot.x, 110)
         self.assertAlmostEqual(self.robot.y, 200)
 
-
 class TestSimulation(unittest.TestCase):
 
     def setUp(self):
@@ -86,3 +85,84 @@ class TestSimulation(unittest.TestCase):
         obs = self.sim.obstacles[0]
         resultat = self.sim.collision(obs)
         self.assertIsInstance(resultat, bool)
+
+
+class TestStrategies(unittest.TestCase):
+
+    def setUp(self):
+        self.sim = Simulation(800, 600)
+
+        # on enlève les obstacles si on veut tester certaines stratégies sans gêne
+        self.sim.obstacles = []
+
+    def test_avancer_x_metres_pas_termine_au_premier_appel(self):
+        strat = AvancerXMetres(self.sim, distance=1, vitesse=80)
+
+        fini = strat.update(0.1)
+
+        self.assertFalse(fini)
+
+    def test_avancer_x_metres_termine_si_distance_deja_parcourue(self):
+        strat = AvancerXMetres(self.sim, distance=1, vitesse=80)
+
+        # premier appel : mémorise le départ
+        strat.update(0.1)
+
+        # on simule un déplacement déjà effectué
+        self.sim.robot.x += 120
+
+        fini = strat.update(0.1)
+
+        self.assertTrue(fini)
+
+    def test_reculer_declenche(self):
+        strat = Reculer(self.sim, vitesse=50, distance=0.4)
+
+        strat.declencher()
+
+        self.assertTrue(strat.actif)
+
+    def test_reculer_update(self):
+        strat = Reculer(self.sim, vitesse=50, distance=0.4)
+
+        strat.declencher()
+        fini = strat.update(0.1)
+
+        self.assertFalse(fini)
+        self.assertEqual(self.sim.robot.vG, -50)
+        self.assertEqual(self.sim.robot.vR, -50)
+
+    def test_freinage_progressif(self):
+        self.sim.robot.vG = 50
+        self.sim.robot.vR = 50
+
+        strat = FreinageProgressif(self.sim)
+        fini = strat.update(1)
+
+        self.assertTrue(fini)
+        self.assertEqual(self.sim.robot.vG, 0)
+        self.assertEqual(self.sim.robot.vR, 0)
+
+    def test_eviter_obstacles_avance_si_rien_devant(self):
+        strat = EviterObstacles(self.sim, vitesse_avance=80, vitesse_tourne=60, seuil=50)
+
+        strat.update(0.1)
+
+        self.assertEqual(self.sim.robot.vG, 80)
+        self.assertEqual(self.sim.robot.vR, 80)
+
+    def test_gestion_strategies_initialisation(self):
+        strat = GestionStrategies(self.sim)
+
+        self.assertEqual(strat.phase, "DEPART")
+
+    def test_gestion_strategies_update(self):
+        strat = GestionStrategies(self.sim)
+
+        strat.update(0.1)
+
+        self.assertIn(strat.phase, ["DEPART", "EVITEMENT", "RECUL", "FREINAGE"])
+
+
+if __name__ == "__main__":
+    unittest.main()
