@@ -1,4 +1,5 @@
 import math
+from turtle import distance
 
 
 class AvancerXMetres:
@@ -133,6 +134,18 @@ class EviterObstacles:
             self.sim.tourner_gauche(self.vitesse_tourne)
         else:
             self.sim.tourner_droite(self.vitesse_tourne)
+
+    def agir_si_proche(self, distance, dist_gauche, dist_droite, dt):
+        """Agit si un obstacle est détecté à une distance inférieure à la distance de sécurité"""
+        self.choisir_direction(dist_gauche, dist_droite) #choisir la direction selon l'espace disponible
+        d_sec = self.distance_securite(dt) #calculer la distance de sécurité nécessaire selon la vitesse et le temps
+        if distance < d_sec * 0.5: ## Si l'obstacle est très proche
+            self.sim.reculer(self.vitesse_avance * 0.6) #flash recule un peu pour se dégager
+            return True
+        if distance < d_sec : # si l'obstacle est proche mais pas critique
+            self.tourner_direction() #flash tourne dans la direction choisie
+            return True
+        return False #si l'obstacle est suffisamment loin, aucune action n'est nécessaire
 
     def update(self, dt):
         dist_obs = self.sim.distance_obstacle(max_range=140)  # distance a l'obstacle devant
