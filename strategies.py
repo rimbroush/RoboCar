@@ -127,6 +127,13 @@ class EviterObstacles:
         if self.direction is None:
             self.direction = "gauche" if dist_gauche > dist_droite else "droite"
 
+    def tourner_direction(self):
+        """Applique une rotation selon la direction choisie"""
+        if self.direction == "gauche":
+            self.sim.tourner_gauche(self.vitesse_tourne)
+        else:
+            self.sim.tourner_droite(self.vitesse_tourne)
+
     def update(self, dt):
         dist_obs = self.sim.distance_obstacle(max_range=140)  # distance a l'obstacle devant
         dist_mur = self.sim.distance_mur(max_range=70) # distance au mur devant
